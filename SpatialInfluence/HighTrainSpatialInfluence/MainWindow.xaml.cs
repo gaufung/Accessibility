@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using HighTrainSpatialInfluence.Services.Config;
 
 namespace HighTrainSpatialInfluence
 {
@@ -22,6 +24,7 @@ namespace HighTrainSpatialInfluence
         public MainWindow()
         {
             InitializeComponent();
+            XmlSpeed speed=new XmlSpeed();
         }
     }
 }
