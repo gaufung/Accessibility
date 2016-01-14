@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Geodatabase;
-using ESRI.ArcGIS.Geometry;
+﻿using ESRI.ArcGIS.Geometry;
 
 namespace HighTrainSpatialInfluence.Services.Raster
 {
-    internal sealed class LandRaster
+    /// <summary>
+    /// 将土地利用的Polygon对象栅格化
+    /// </summary>
+    internal sealed class LandRaster:Raster
     {
-        /// <summary>
-        /// 栅格的大小
-        /// </summary>
-        private Double _cellSize;
-
-        public LandRaster(double cellSize)
+        public LandRaster(double cellSize, IEnvelope envelope, string rasterType):
+            base(cellSize,envelope,rasterType)
         {
-            _cellSize = cellSize;
-        }
-
-        public IGeoDataset Raster(IFeatureClass pFeatureClass,String raterWorkSpace)
-        {
-            IGeoDataset geoDataset = (IGeoDataset) pFeatureClass;
-            ISpatialReference spatialReference = geoDataset.SpatialReference;
-            //create a rasterMaker operator      
-            return null;
+            
         }
     }
 }

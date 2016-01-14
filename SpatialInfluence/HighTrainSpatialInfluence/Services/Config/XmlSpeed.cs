@@ -21,7 +21,7 @@ namespace HighTrainSpatialInfluence.Services.Config
 
         public XmlSpeed()
         {
-            string xmlPath = AppDomain.CurrentDomain + @"\config\Speed.xml";
+            string xmlPath = AppDomain.CurrentDomain.BaseDirectory + @"config\Speed.xml";
             Read(xmlPath);
         }
 
@@ -32,10 +32,9 @@ namespace HighTrainSpatialInfluence.Services.Config
             {
                 doc.Load(xmlPath);
                 XmlElement root = doc.DocumentElement;
-                XmlNode node = root.FirstChild;
-                for (int i = 0; i < node.ChildNodes.Count; i++)
+                for (int i = 0; i < root.ChildNodes.Count; i++)
                 {
-                    var typeSpeed = Parse(node.ChildNodes[i]);
+                    var typeSpeed = Parse(root.ChildNodes[i]);
                     TypeSpeed.Add(typeSpeed.Key,typeSpeed.Value);
                 }
             }
