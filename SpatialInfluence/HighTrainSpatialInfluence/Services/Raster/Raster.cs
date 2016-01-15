@@ -38,7 +38,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// <param name="newRasterName">新的栅格名称</param>
         public void Convert(IFeatureClass pFeatureClass,string fieldName,string rasterWorkSpace,string newRasterName)
         {
-            DeleteWorkspace(rasterWorkSpace);
+            DeleteWorkspace(rasterWorkSpace, newRasterName);
             IFeatureClassDescriptor featureClassDescriptor = new FeatureClassDescriptorClass();
             featureClassDescriptor.Create(pFeatureClass, null, fieldName);
             IGeoDataset geoDataset = (IGeoDataset)featureClassDescriptor;
@@ -47,6 +47,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
             IConversionOp conversionOp = new RasterConversionOpClass();
             IRasterAnalysisEnvironment rasterAnalysisEnvironment = (IRasterAnalysisEnvironment)conversionOp;
             rasterAnalysisEnvironment.OutWorkspace = workspace;
+
        
             //set cell size
             rasterAnalysisEnvironment.SetCellSize(esriRasterEnvSettingEnum.esriRasterEnvValue, ref CellSize);
@@ -64,23 +65,25 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// 删除文件下的文件
         /// </summary>
         /// <param name="rasterWorkSpace">工作空间文件夹</param>
-        private void DeleteWorkspace(string rasterWorkSpace)
+        /// <param name="rasterName"></param>
+        private void DeleteWorkspace(string rasterWorkSpace,string rasterName)
         {
-            //foreach (string d in Directory.GetFileSystemEntries(rasterWorkSpace))
-            //{
-            //    if (File.Exists(d))
-            //    {
-            //        FileInfo fi = new FileInfo(d);
-            //        if (fi.Attributes.ToString().IndexOf("ReadOnly") != -1)
-            //            fi.Attributes = FileAttributes.Normal;
-            //        File.Delete(d);     //删除文件   
-            //    }
-            //    else
-            //        DeleteWorkspace(d);    //删除文件夹
-            //}
-            Directory.Delete(rasterWorkSpace, true);
-            Directory.CreateDirectory(rasterWorkSpace);
-
+            int dotIndex = rasterName.IndexOf(".");
+            if (dotIndex != -1) rasterName = rasterName.Substring(0, dotIndex + 1);
+            try
+            {
+                DirectoryInfo info = new DirectoryInfo(rasterWorkSpace);
+                foreach (var fileInfo in info.GetFiles(rasterName))
+                {
+                    fileInfo.Delete();
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+            
         }
     }
 }

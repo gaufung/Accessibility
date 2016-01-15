@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows;
 using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
+using HighTrainSpatialInfluence.Model;
 
 namespace HighTrainSpatialInfluence.Services.Raster
 {
@@ -23,7 +27,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
      * y
      * 
      */
-    internal sealed class RasterReaderWriter
+    internal sealed class RasterReader
     {
 
         #region 私有成员
@@ -47,6 +51,12 @@ namespace HighTrainSpatialInfluence.Services.Raster
         public int Height { get; private set; }
         public int Width { get; private set; }
 
+        public double XCellSize { get; private set; }
+        public double YCellSize { get; private set; }
+        public IPoint OriginPoint { get; private set; }
+        public ISpatialReference SpatialReference { get; private set; }
+
+        public object NoDataValue { get; private set; }
         #endregion
 
 
@@ -55,7 +65,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// </summary>
         /// <param name="rasterWorkSapce">栅格文件夹路径</param>
         /// <param name="rasterName">栅格文件,要求有.tif文件名</param>
-        public RasterReaderWriter(string rasterWorkSapce, string rasterName)
+        public RasterReader(string rasterWorkSapce, string rasterName)
         {
             _rasterWorkSapce = rasterWorkSapce;
             _rasterName = rasterName;
@@ -87,9 +97,19 @@ namespace HighTrainSpatialInfluence.Services.Raster
                 throw new ArgumentException("栅格文件无法打开");
             _pDataset= rasterWorkspace.OpenRasterDataset(_rasterName);
             //set height and width
+            
             IRasterProps pRasterProps = (IRasterProps)GetRaster();
             Height = pRasterProps.Height;
             Width = pRasterProps.Width;
+            XCellSize = pRasterProps.MeanCellSize().X;
+            YCellSize = pRasterProps.MeanCellSize().Y;
+            OriginPoint = new PointClass
+            {
+                X = pRasterProps.Extent.XMin,
+                Y = pRasterProps.Extent.YMin
+            };
+            NoDataValue = pRasterProps.NoDataValue;
+            SpatialReference = ((IGeoDataset) _pDataset).SpatialReference;
         }
 
         /// <summary>
@@ -106,7 +126,13 @@ namespace HighTrainSpatialInfluence.Services.Raster
                 _pDataset.Copy(rasterName, pWorkspace);
             }         
         }
-
+        
+        /// <summary>
+        /// 读取数据
+        /// </summary>
+        /// <param name="xIndex">水平方向的序号</param>
+        /// <param name="yIndex">垂直方向的序号</param>
+        /// <returns>获取的值，如果为null,表明该位置没有数据</returns>
         public object Read(int xIndex, int yIndex)
         {
             Debug.Assert(xIndex<Width);
@@ -122,28 +148,62 @@ namespace HighTrainSpatialInfluence.Services.Raster
             return obj;
         }
 
-        public void Write(int xIndex, int yIndex,object value)
-        {
-            IPnt blockSize=new PntClass();
-            blockSize.SetCoords(Width,Height);
-            IRaster pRaster = GetRaster();
-            IPixelBlock3 pixelBlock=pRaster.CreatePixelBlock(blockSize) as IPixelBlock3;
-            
-            //Populate some pixel values to the Pixel block
-            Array pixels = (Array) pixelBlock.get_PixelData(0);
-            pixels.SetValue(value, xIndex, yIndex);
-            pixelBlock.PixelData[0]=pixels;
-            //define the location that the upper left corner of the pixel block is to write
-            IPnt upperLeft = new PntClass();
-            upperLeft.SetCoords(0,0);
-            IRasterEdit rasterEdit = (IRasterEdit) pRaster;
-            rasterEdit.Write(upperLeft, (IPixelBlock)pixelBlock);
-            Marshal.ReleaseComObject(rasterEdit);
-        }
 
+        /// <summary>
+        /// 获取IRaster接口
+        /// </summary>
+        /// <returns></returns>
         private IRaster GetRaster()
         {
             return _pDataset.CreateDefaultRaster();
+        }
+
+        /// <summary>
+        /// 为了方便计算，栅格数据转换成二维矩阵
+        /// </summary>
+        /// <returns></returns>
+        public float?[,] Convert2Matrix()
+        {
+            float?[,] raster = new float?[Width, Height];
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    object res = Read(i, j);
+                    if (res == null)
+                    {
+                        raster[i,j] = null;
+                    }
+                    else
+                    {
+                        raster[i,j] = System.Convert.ToSingle(res);
+                    }
+                }
+            }
+            return raster;
+        }
+
+
+        //获取某个位置相对于栅格位置的坐标
+        public RasterPositionValue Coordinate(IPoint point)
+        {
+            IRasterProps rasterProps = (IRasterProps) GetRaster();
+            if (!Contains(rasterProps.Extent.Envelope, point))
+                return null;
+            int xIndex = (int)((point.X - rasterProps.Extent.XMin)/rasterProps.MeanCellSize().X);
+            int yIndex = (int) ((rasterProps.Extent.YMax - point.Y)/rasterProps.MeanCellSize().Y);
+            return new RasterPositionValue()
+            {
+                RasterValue = Read(xIndex,yIndex),
+                XIndex = xIndex,
+                YIndex = yIndex
+            };
+        }
+
+        private Boolean Contains(IEnvelope pEnvelope, IPoint point)
+        {
+            return point.X <= pEnvelope.XMax && point.X >= pEnvelope.XMin
+                   && point.Y >= pEnvelope.YMin && point.Y <= pEnvelope.YMax;
         }
 
     }

@@ -118,11 +118,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\CellCost.cs" />
+    <Compile Include="Model\Postion.cs" />
+    <Compile Include="Services\Algorithm\RasterCost.cs" />
     <Compile Include="Services\Config\Speed.cs" />
     <Compile Include="Services\Config\XmlSpeed.cs" />
     <Compile Include="Services\Raster\LandRaster.cs" />
     <Compile Include="Services\Raster\Raster.cs" />
-    <Compile Include="Services\Raster\RasterReaderWriter.cs" />
+    <Compile Include="Model\RasterPositionValue.cs" />
+    <Compile Include="Services\Raster\RasterReader.cs" />
+    <Compile Include="Services\Raster\RasterWriter.cs" />
     <Compile Include="Services\Raster\RoadRaster.cs" />
     <Compile Include="Services\ShapeFile\ShapeReader.cs" />
     <Page Include="MainWindow.xaml">
@@ -163,6 +168,7 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
