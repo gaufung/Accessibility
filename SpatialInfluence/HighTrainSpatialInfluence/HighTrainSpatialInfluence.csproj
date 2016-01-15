@@ -121,6 +121,10 @@
     <Compile Include="Model\CellCost.cs" />
     <Compile Include="Model\Postion.cs" />
     <Compile Include="Services\Algorithm\RasterCost.cs" />
+    <Compile Include="Services\Algorithm\SP\DijkstraAlgorithm.cs" />
+    <Compile Include="Services\Algorithm\SP\NetWorkUtil.cs" />
+    <Compile Include="Services\Algorithm\SP\City.cs" />
+    <Compile Include="Services\Algorithm\SP\RailWayPath.cs" />
     <Compile Include="Services\Config\Speed.cs" />
     <Compile Include="Services\Config\XmlSpeed.cs" />
     <Compile Include="Services\Raster\LandRaster.cs" />
@@ -129,7 +133,7 @@
     <Compile Include="Services\Raster\RasterReader.cs" />
     <Compile Include="Services\Raster\RasterWriter.cs" />
     <Compile Include="Services\Raster\RoadRaster.cs" />
-    <Compile Include="Services\ShapeFile\ShapeReader.cs" />
+    <Compile Include="Services\ShapeFile\ShapeOp.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
