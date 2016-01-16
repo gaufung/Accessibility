@@ -97,14 +97,20 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\ArcGIS\DeveloperKit10.2\DotNet\ESRI.ArcGIS.Version.dll</HintPath>
     </Reference>
-    <Reference Include="GalaSoft.MvvmLight">
-      <HintPath>..\..\..\..\..\书籍\C#\GalaSoft.MvvmLight\X86\4.0.0.0\BL0017\GalaSoft.MvvmLight.dll</HintPath>
+    <Reference Include="Fluent">
+      <HintPath>..\package\dll\Fluent.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=0.0.0.0, Culture=neutral, PublicKeyToken=3e875cdb3903c512, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\package\dll\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\package\dll\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -112,28 +118,34 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\CellCost.cs" />
-    <Compile Include="Model\Postion.cs" />
+    <Compile Include="Models\CellCost.cs" />
+    <Compile Include="Models\Postion.cs" />
     <Compile Include="Services\Algorithm\RasterCost.cs" />
     <Compile Include="Services\Algorithm\SP\DijkstraAlgorithm.cs" />
     <Compile Include="Services\Algorithm\SP\NetWorkUtil.cs" />
     <Compile Include="Services\Algorithm\SP\City.cs" />
     <Compile Include="Services\Algorithm\SP\RailWayPath.cs" />
+    <Compile Include="Services\Common\CheckValidity.cs" />
+    <Compile Include="Services\Common\DialogHelper.cs" />
     <Compile Include="Services\Config\Speed.cs" />
     <Compile Include="Services\Config\XmlSpeed.cs" />
-    <Compile Include="Services\Raster\LandRaster.cs" />
     <Compile Include="Services\Raster\Raster.cs" />
-    <Compile Include="Model\RasterPositionValue.cs" />
+    <Compile Include="Models\RasterPositionValue.cs" />
     <Compile Include="Services\Raster\RasterReader.cs" />
     <Compile Include="Services\Raster\RasterWriter.cs" />
-    <Compile Include="Services\Raster\RoadRaster.cs" />
     <Compile Include="Services\ShapeFile\ShapeOp.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\RasterTimeCostViewModel.cs" />
+    <Compile Include="Views\RasterTimeCostView.xaml.cs">
+      <DependentUpon>RasterTimeCostView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,6 +158,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\RasterTimeCostView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -173,6 +189,24 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\city.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Archives.png" />
+    <Resource Include="Resources\Cancel.png" />
+    <Resource Include="Resources\import.png" />
+    <Resource Include="Resources\ImportInfo.png" />
+    <Resource Include="Resources\Map.png" />
+    <Resource Include="Resources\open-alt.png" />
+    <Resource Include="Resources\raster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\train.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\City.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
+using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using HighTrainSpatialInfluence.Model;
@@ -11,6 +13,7 @@ using HighTrainSpatialInfluence.Services.Algorithm.SP;
 using HighTrainSpatialInfluence.Services.Config;
 using HighTrainSpatialInfluence.Services.Raster;
 using HighTrainSpatialInfluence.Services.ShapeFile;
+using HighTrainSpatialInfluence.ViewModels;
 using FileStream = ESRI.ArcGIS.esriSystem.FileStream;
 
 namespace HighTrainSpatialInfluence
@@ -20,16 +23,24 @@ namespace HighTrainSpatialInfluence
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AxMapControl _mainMapControl;
         public MainWindow()
         {
             InitializeComponent();    
-            //Test();
-            //TestOverlay();
-          // CreatePolygon();
-          //  TestArrive();
-            TestRailWay();
+            CreateEngineControls();
+            var mainVm=new MainWindowViewModel(_mainMapControl);
+            DataContext = mainVm;
         }
 
+        private void CreateEngineControls()
+        {
+            _mainMapControl=new AxMapControl
+            {
+                Dock = DockStyle.None,
+                BackColor = System.Drawing.Color.AliceBlue
+            };
+            MainFormsHost.Child = _mainMapControl;
+        }
         private void Test()
         {
             //Speed speed = new XmlSpeed();

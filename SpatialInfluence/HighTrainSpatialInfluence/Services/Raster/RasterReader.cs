@@ -176,7 +176,16 @@ namespace HighTrainSpatialInfluence.Services.Raster
                     }
                     else
                     {
-                        raster[i,j] = System.Convert.ToSingle(res);
+                       // raster[i, j] = System.Convert.ToSingle(res) < 0 ? null : System.Convert.ToSingle(res);
+                        Single value = System.Convert.ToSingle(res);
+                        if (value < 0)
+                        {
+                            raster[i, j] = null;
+                        }
+                        else
+                        {
+                            raster[i, j] = value;
+                        }
                     }
                 }
             }

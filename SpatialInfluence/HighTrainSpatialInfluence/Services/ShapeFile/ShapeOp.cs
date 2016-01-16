@@ -103,10 +103,15 @@ namespace HighTrainSpatialInfluence.Services.ShapeFile
         //    pWorkspaceEdit.StopEditing(true);                 
         //}
 
-        private readonly string _filePath;
+        public string FilePath { get; set; }
         public ShapeOp(string filePath)
         {
-            _filePath = filePath;
+            FilePath = filePath;
+        }
+
+        public ShapeOp()
+        {
+            
         }
         /// <summary>
         /// 
@@ -114,8 +119,8 @@ namespace HighTrainSpatialInfluence.Services.ShapeFile
         /// <returns></returns>
         public IFeatureClass OpenFeatureClass()
         {
-            string path2Workspace = Path.GetDirectoryName(_filePath);
-            string shapefileName = Path.GetFileNameWithoutExtension(_filePath);
+            string path2Workspace = Path.GetDirectoryName(FilePath);
+            string shapefileName = Path.GetFileNameWithoutExtension(FilePath);
             IWorkspaceFactory pWorkspaceFactroy = new ShapefileWorkspaceFactoryClass();
             IWorkspace pws = pWorkspaceFactroy.OpenFromFile(path2Workspace, 0);
             IFeatureWorkspace pFeatureWorkspace = pws as IFeatureWorkspace;

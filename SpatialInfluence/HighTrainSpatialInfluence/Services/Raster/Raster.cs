@@ -9,7 +9,7 @@ using Object = System.Object;
 
 namespace HighTrainSpatialInfluence.Services.Raster
 {
-    internal abstract class Raster
+    internal  class Raster
     {
         protected Object CellSize;
         protected Object ExtentEnvelope;
@@ -20,7 +20,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// <param name="cellSize">栅格大小</param>
         /// <param name="envelope">拓展矩形</param>
         /// <param name="rasterType">栅格文件的类型</param>
-        protected Raster(double cellSize,IEnvelope envelope,string rasterType)
+        public Raster(double cellSize,IEnvelope envelope,string rasterType)
         {
             Debug.Assert(cellSize>=0);
             Debug.Assert(envelope!=null);

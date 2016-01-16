@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows;
 using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
@@ -27,7 +26,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// Y网格的宽度
         /// </summary>
         public Double CellSizeY { get; set; }
-        public object NoDataValue { get; set; }
+      
 
         /// <summary>
         /// Bands 
