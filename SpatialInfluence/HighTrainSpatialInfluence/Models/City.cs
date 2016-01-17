@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace HighTrainSpatialInfluence.Services.Algorithm.SP
+namespace HighTrainSpatialInfluence.Models
 {
     /// <summary>
     /// 城市结点
     /// </summary>
     [Serializable]
-    internal sealed class City
+    internal  class City
     {
         /// <summary>
         /// X坐标
@@ -21,7 +21,7 @@ namespace HighTrainSpatialInfluence.Services.Algorithm.SP
         /// <summary>
         /// 城市名称
         /// </summary>
-        public String Name { get; private set; }
+        public String Name { get;  set; }
 
         #region 城市的人口，经济等等相关属性
         

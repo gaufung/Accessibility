@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HighTrainSpatialInfluence.Models;
 
 namespace HighTrainSpatialInfluence.Services.Algorithm.SP
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HighTrainSpatialInfluence.Services.Algorithm.SP
+namespace HighTrainSpatialInfluence.Models
 {
     /// <summary>
     /// 高铁路线

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ESRI.ArcGIS.DataSourcesFile;
@@ -142,6 +143,15 @@ namespace HighTrainSpatialInfluence.Services.ShapeFile
             pFieldEdit.Name_2 = fieldName;
             pFieldEdit.Type_2 = fieldType;  
             pFeatureClass.AddField(pFieldEdit);
+        }
+
+        public IEnumerable<string> Fields()
+        {
+            IFeatureClass pFeatureClass = OpenFeatureClass();
+            for (int i = 0; i < pFeatureClass.Fields.FieldCount; i++)
+            {
+                yield return pFeatureClass.Fields.Field[i].Name;
+            }
         }
     }
 }

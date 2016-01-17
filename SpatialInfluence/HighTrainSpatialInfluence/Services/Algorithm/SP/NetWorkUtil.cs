@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using HighTrainSpatialInfluence.Models;
 using HighTrainSpatialInfluence.Services.ShapeFile;
 
 namespace HighTrainSpatialInfluence.Services.Algorithm.SP

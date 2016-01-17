@@ -208,7 +208,10 @@ namespace HighTrainSpatialInfluence.Services.Raster
                 YIndex = yIndex
             };
         }
-
+        public RasterPositionValue Coordinate(double x,double y)
+        {
+            return Coordinate(new PointClass() {X = x, Y = y});
+        }
         private Boolean Contains(IEnvelope pEnvelope, IPoint point)
         {
             return point.X <= pEnvelope.XMax && point.X >= pEnvelope.XMin

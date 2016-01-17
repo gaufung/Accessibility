@@ -119,22 +119,27 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFToolkit">
+      <HintPath>..\package\dll\WPFToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\CalculatorCity.cs" />
     <Compile Include="Models\CellCost.cs" />
     <Compile Include="Models\Postion.cs" />
     <Compile Include="Services\Algorithm\RasterCost.cs" />
     <Compile Include="Services\Algorithm\SP\DijkstraAlgorithm.cs" />
     <Compile Include="Services\Algorithm\SP\NetWorkUtil.cs" />
-    <Compile Include="Services\Algorithm\SP\City.cs" />
-    <Compile Include="Services\Algorithm\SP\RailWayPath.cs" />
+    <Compile Include="Models\City.cs" />
+    <Compile Include="Models\RailWayPath.cs" />
     <Compile Include="Services\Common\CheckValidity.cs" />
     <Compile Include="Services\Common\DialogHelper.cs" />
     <Compile Include="Services\Config\Speed.cs" />
+    <Compile Include="Services\Config\Target.cs" />
     <Compile Include="Services\Config\XmlSpeed.cs" />
     <Compile Include="Services\Raster\Raster.cs" />
     <Compile Include="Models\RasterPositionValue.cs" />
@@ -143,6 +148,7 @@
     <Compile Include="Services\ShapeFile\ShapeOp.cs" />
     <Compile Include="ViewModels\HighTrainNoViewModel.cs" />
     <Compile Include="ViewModels\HighTrainYesViewModel.cs" />
+    <Compile Include="ViewModels\LocationAccessiblityViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RasterTimeCostViewModel.cs" />
     <Compile Include="Views\HighTrainNoView.xaml.cs">
@@ -150,6 +156,9 @@
     </Compile>
     <Compile Include="Views\HighTrainYesView.xaml.cs">
       <DependentUpon>HighTrainYesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LocationAccessiblityView.xaml.cs">
+      <DependentUpon>LocationAccessiblityView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RasterTimeCostView.xaml.cs">
       <DependentUpon>RasterTimeCostView.xaml</DependentUpon>
@@ -171,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HighTrainYesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LocationAccessiblityView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,7 @@ using ESRI.ArcGIS.Geometry;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HighTrainSpatialInfluence.Model;
+using HighTrainSpatialInfluence.Models;
 using HighTrainSpatialInfluence.Services.Algorithm;
 using HighTrainSpatialInfluence.Services.Algorithm.SP;
 using HighTrainSpatialInfluence.Services.Common;

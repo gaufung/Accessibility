@@ -79,6 +79,7 @@ namespace HighTrainSpatialInfluence.ViewModels
             RasterTimeCostCommand = new RelayCommand(RasterTimeCost);
             HighTrainNoCommand = new RelayCommand(HighTrainNo);
             HighTrainYesCommand = new RelayCommand(HighTrainYes);
+            LocationAccessiblityCommand = new RelayCommand(LocationAccessiblity);
         }
 
         public RelayCommand OpenLandUseCommand { get; set; }
@@ -168,7 +169,16 @@ namespace HighTrainSpatialInfluence.ViewModels
             view.Show();
         }
 
-        
+        public RelayCommand LocationAccessiblityCommand { get; set; }
+        private void LocationAccessiblity()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                LocationAccessiblityView view = new LocationAccessiblityView(new LocationAccessiblityViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+          
+        }
         #endregion
 
         #region 加载图层

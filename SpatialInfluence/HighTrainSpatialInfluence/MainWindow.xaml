@@ -37,6 +37,16 @@
                     <fluent:Button Text="开通高铁" LargeIcon="Resources/HighTrainYes.png"
                                    Command="{Binding HighTrainYesCommand}"/>
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="指标计算">
+                    <fluent:Button Text="区位可达性" LargeIcon="Resources/Archives.png"
+                                   Command="{Binding LocationAccessiblityCommand}"/>
+                    <fluent:Button Text="相对可达性" LargeIcon="Resources/Archives.png"
+                                   Command="{Binding NetworkEfficiencyCommand}"/>
+                    <fluent:Button Text="经济潜能" LargeIcon="Resources/Archives.png"
+                                   Command="{Binding EconomicalPotentialCommand}"/>
+                    <fluent:Button Text="机会可达性" LargeIcon="Resources/Archives.png"
+                                   Command="{Binding ChanceAccessiblityCommand}"/>
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
         <Grid Grid.Row="1">
