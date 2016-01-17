@@ -62,6 +62,15 @@ namespace HighTrainSpatialInfluence.Model
             return new Postion(XIndex - 1, YIndex);
         }
         #endregion
-       
+
+        public override bool Equals(object obj)
+        {
+            Postion pos = (Postion) obj;
+            if (pos!=null)
+            {
+                return pos.XIndex == XIndex && pos.YIndex == YIndex;
+            }
+            return false;
+        }
     }
 }

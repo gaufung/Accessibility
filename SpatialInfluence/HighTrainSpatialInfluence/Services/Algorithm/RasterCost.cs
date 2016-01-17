@@ -33,11 +33,31 @@ namespace HighTrainSpatialInfluence.Services.Algorithm
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="basicRaster"></param>
+        /// <param name="value"></param>
+        public static void Overlay(float?[,] basicRaster, float value)
+        {
+            for (int i = 0; i < basicRaster.GetLength(0); i++)
+            {
+                for (int j = 0; j < basicRaster.GetLength(1); j++)
+                {
+                    if (basicRaster[i, j].HasValue)
+                    {
+
+                        basicRaster[i, j] = (float) basicRaster[i, j]+value;
+                    }
+                }
+            }
+        }
+
         #region 计算时间费用
 
         public static float?[,] Calculator(float?[,] timeCostRaster, Postion startPoistion)
         {
-            if(!timeCostRaster[startPoistion.YIndex,startPoistion.XIndex].HasValue)
+            if(!timeCostRaster[startPoistion.XIndex,startPoistion.YIndex].HasValue)
                  throw new ArgumentException("初始位置不含有时间成本，无法计算");
             CellCost[,] cost=new CellCost[timeCostRaster.GetLength(0),timeCostRaster.GetLength(1)];
             for (int i = 0; i < cost.GetLength(0); i++)

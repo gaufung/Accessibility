@@ -77,6 +77,8 @@ namespace HighTrainSpatialInfluence.ViewModels
             OpenHighTrainCommand = new RelayCommand(OpenHighTrain);
             OpenCitiesCommand = new RelayCommand(OpenCities);
             RasterTimeCostCommand = new RelayCommand(RasterTimeCost);
+            HighTrainNoCommand = new RelayCommand(HighTrainNo);
+            HighTrainYesCommand = new RelayCommand(HighTrainYes);
         }
 
         public RelayCommand OpenLandUseCommand { get; set; }
@@ -143,6 +145,30 @@ namespace HighTrainSpatialInfluence.ViewModels
             RasterTimeCostView view = new RasterTimeCostView(vm);
             view.ShowDialog();
         }
+
+        public RelayCommand HighTrainNoCommand { get; set; }
+
+        private void HighTrainNo()
+        {
+            if (string.IsNullOrEmpty(_citiesFilePath)) return;
+            HighTrainNoView view = 
+                new HighTrainNoView(new HighTrainNoViewModel(_citiesFilePath));
+            view.ShowDialog();
+        }
+
+        public RelayCommand HighTrainYesCommand { get; set; }
+
+        private void HighTrainYes()
+        {
+            if (string.IsNullOrEmpty(_citiesFilePath) ||
+                string.IsNullOrEmpty(_highTrainFilePath))
+                return;
+            HighTrainYesView view=new 
+                HighTrainYesView(new HighTrainYesViewModel(_citiesFilePath,_highTrainFilePath));
+            view.Show();
+        }
+
+        
         #endregion
 
         #region 加载图层

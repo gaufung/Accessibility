@@ -31,6 +31,12 @@
                     <fluent:Button LargeIcon="Resources/ImportInfo.png"
                                    Text="栅格时间成本" Command="{Binding RasterTimeCostCommand}"/>
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="空间可达性">
+                    <fluent:Button Text="未开通高铁" LargeIcon="Resources/HighTrainNo.png"
+                                   Command="{Binding HighTrainNoCommand}"/>
+                    <fluent:Button Text="开通高铁" LargeIcon="Resources/HighTrainYes.png"
+                                   Command="{Binding HighTrainYesCommand}"/>
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
         <Grid Grid.Row="1">

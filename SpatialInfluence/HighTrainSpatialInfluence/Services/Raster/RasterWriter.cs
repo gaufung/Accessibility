@@ -94,6 +94,7 @@ namespace HighTrainSpatialInfluence.Services.Raster
 
                 //Release rasterEdit explicitly.
                 Marshal.ReleaseComObject(rasterEdit);
+                
             }
             catch (Exception ex)
             {

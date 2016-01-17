@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HighTrainSpatialInfluence.Services.Algorithm.SP
 {
@@ -8,7 +9,7 @@ namespace HighTrainSpatialInfluence.Services.Algorithm.SP
     /// </summary>
     internal sealed class DijkstraAlgorithm
     {
-        private List<RailwayPath> _railways;
+        private IEnumerable<RailwayPath> _railways;
 
         private Dictionary<string, int> _cities;
 
@@ -16,7 +17,7 @@ namespace HighTrainSpatialInfluence.Services.Algorithm.SP
 
         private const Double NonConnect = -1;
         private const Double Tolerance = 10e-5;
-        public DijkstraAlgorithm(List<RailwayPath> railways)
+        public DijkstraAlgorithm(IEnumerable<RailwayPath> railways)
         {
             _railways = railways;
             _cities = new Dictionary<string, int>();
@@ -44,13 +45,23 @@ namespace HighTrainSpatialInfluence.Services.Algorithm.SP
             //    _cities.Add(name,count);
             //    count++;
             //}
-            for (int i = 0; i < _railways.Count; i++)
+            //for (int i = 0; i < _railways.Count; i++)
+            //{
+            //    string startName = _railways[i].StartCity;
+            //    string stopName = _railways[i].StopCity;
+            //    if(!_cities.ContainsKey(startName))
+            //        _cities.Add(startName, count++);
+            //    if(!_cities.ContainsKey(stopName))
+            //        _cities.Add(stopName, count++);
+            //}
+
+            foreach (var railway in _railways)
             {
-                string startName = _railways[i].StartCity;
-                string stopName = _railways[i].StopCity;
-                if(!_cities.ContainsKey(startName))
+                string startName = railway.StartCity;
+                string stopName = railway.StopCity;
+                if (!_cities.ContainsKey(startName))
                     _cities.Add(startName, count++);
-                if(!_cities.ContainsKey(stopName))
+                if (!_cities.ContainsKey(stopName))
                     _cities.Add(stopName, count++);
             }
         }
@@ -174,6 +185,16 @@ namespace HighTrainSpatialInfluence.Services.Algorithm.SP
                 return Dijkstra(_cities[name]);
             }
             throw new ArgumentOutOfRangeException("网络中不包含目标城市");
+        }
+
+        public IEnumerable<string> GetCityEnumerator()
+        {
+            return _cities.Select(city => city.Key);
+        }
+
+        public int GetCityIndex(string name)
+        {
+            return _cities.ContainsKey(name) ? _cities[name] : -1;
         }
 
         private Boolean IsConnect(int start, int stop)

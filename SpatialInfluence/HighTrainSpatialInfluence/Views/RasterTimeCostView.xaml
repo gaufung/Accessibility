@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         x:ClassModifier="internal"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="栅格时间成本" Height="200" Width="280" ResizeMode="NoResize">
+        Title="栅格时间成本" Height="200" Width="280" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>

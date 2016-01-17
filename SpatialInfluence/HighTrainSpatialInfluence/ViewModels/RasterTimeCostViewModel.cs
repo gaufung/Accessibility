@@ -272,27 +272,6 @@ namespace HighTrainSpatialInfluence.ViewModels
             return false;
         }
 
-        private void Print(float?[,] raster, string name)
-        {
-            string fileName = @"D:\数据" + name;
-            using (
-                System.IO.FileStream fs = new System.IO.FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite)
-                )
-            {
-                StreamWriter sw = new StreamWriter(fs);
-                for (int i = 0; i < raster.GetLength(1); i++)
-                {
-                    string line = string.Empty;
-                    for (int j = 0; j < raster.GetLength(0); j++)
-                    {
-                        line += raster[j, i].ToString() + "\t";
-                    }
-                    sw.WriteLine(line);
-                    sw.Flush();
-                }
-                sw.Close();
-                fs.Close();
-            }
-        }
+        
     }
 }
