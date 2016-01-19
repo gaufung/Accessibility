@@ -1,4 +1,5 @@
 ﻿using System;
+using ESRI.ArcGIS.Geometry;
 
 namespace SpatialAccess.Models
 {
@@ -44,6 +45,15 @@ namespace SpatialAccess.Models
         public override int GetHashCode()
         {
             return Name.GetHashCode();
+        }
+        /// <summary>
+        /// 隐式装换
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public static implicit operator PointClass(City city)
+        {
+            return new PointClass(){X =city.XCoord,Y=city.YCoord };
         }
     }
 }

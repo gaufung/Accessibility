@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>city.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.AxControls, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -130,11 +133,46 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\CalculatorCity.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\HighTrainPath.cs" />
     <Compile Include="Models\Postion.cs" />
+    <Compile Include="Models\RasterInformation.cs" />
     <Compile Include="Models\RasterPositionValue.cs" />
+    <Compile Include="Services\Algorithm\DijkstraAlgorithm.cs" />
+    <Compile Include="Services\Algorithm\NetWorkUtil.cs" />
+    <Compile Include="Services\Algorithm\RasterAlgorithm.cs" />
+    <Compile Include="Services\Common\CheckValidity.cs" />
     <Compile Include="Services\Common\DialogHelper.cs" />
+    <Compile Include="Services\Common\FileHelper.cs" />
+    <Compile Include="Services\Config\XmlSpeed.cs" />
+    <Compile Include="Services\Raster\RasterConvertion.cs" />
+    <Compile Include="Services\Raster\RasterOp.cs" />
+    <Compile Include="Services\Raster\RasterReader.cs" />
+    <Compile Include="Services\Raster\RasterWriter.cs" />
+    <Compile Include="Services\ShapeFile\ShapeOp.cs" />
+    <Compile Include="ViewModels\HighTrainNoViewModel.cs" />
+    <Compile Include="ViewModels\HighTrainYesViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\RasterTimeCostViewModel.cs" />
+    <Compile Include="Views\ContinuousWait.xaml.cs">
+      <DependentUpon>ContinuousWait.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HighTrainNoView.xaml.cs">
+      <DependentUpon>HighTrainNoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HighTrainYesView.xaml.cs">
+      <DependentUpon>HighTrainYesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressWait.xaml.cs">
+      <DependentUpon>ProgressWait.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RasterTimeCostView.xaml.cs">
+      <DependentUpon>RasterTimeCostView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserWait.xaml.cs">
+      <DependentUpon>UserWait.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,6 +185,30 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ContinuousWait.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HighTrainNoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HighTrainYesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProgressWait.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RasterTimeCostView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserWait.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -173,8 +235,27 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
+    <Resource Include="Resources\check_alt.png" />
+    <Resource Include="Resources\x_alt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Archives.png" />
+    <Resource Include="Resources\Cancel.png" />
+    <Resource Include="Resources\City.png" />
+    <Resource Include="Resources\HighTrainNo.png" />
+    <Resource Include="Resources\HighTrainYes.png" />
+    <Resource Include="Resources\import.png" />
+    <Resource Include="Resources\ImportInfo.png" />
+    <Resource Include="Resources\Map.png" />
+    <Resource Include="Resources\open-alt.png" />
+    <Resource Include="Resources\raster.png" />
+    <Resource Include="Resources\train.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\city.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="city.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

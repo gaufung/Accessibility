@@ -2,63 +2,42 @@
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Geodatabase;
+using SpatialAccess.Models;
+using SpatialAccess.Services.Common;
 
-namespace HighTrainSpatialInfluence.Services.Raster
+namespace SpatialAccess.Services.Raster
 {
     internal sealed class RasterWriter
     {
         private string _workSpace;
         private string _fileName;
 
-        public IRasterInfo2 RasterInfo { get; set; }
-        ////public string Format { get; set; }
-        ///// <summary>
-        ///// the lower left corner of the raster.
-        ///// </summary>
-        //public IPoint OriginPoint { get; set; }
-
-        ///// <summary>
-        ///// X网格的宽度
-        ///// </summary>
-        //public Double CellSizeX { get; set; }
-        ///// <summary>
-        ///// Y网格的宽度
-        ///// </summary>
-        //public Double CellSizeY { get; set; }
+        public RasterInformation RasterInfo { get; set; }
       
-
-        ///// <summary>
-        ///// Bands 
-        ///// </summary>
-        //public int NumBands { get; set; }
-
-        //public Int32 Width { get;  private set; }
-        //public Int32 Height { get; private set; }
-
         /// <summary>
-        /// Spatail Reference
+        /// 新建一个RasterWriter
         /// </summary>
-       // public ISpatialReference SpatialReference { get; set; }
-
+        /// <param name="workSpace">文件位置</param>
+        /// <param name="fileName">文件名称（不带有tif的后缀名）</param>
+        /// <param name="rasterInfo">要写的栅格的相关信息</param>
         public RasterWriter(string workSpace, string fileName, RasterInformation rasterInfo)
         {
             _workSpace = workSpace;
             _fileName = fileName;
             RasterInfo = rasterInfo;
-            //NumBands = 1;
         }
 
         public void Write(float?[,] rasterValue, string format)
         {
-
+            FileHelper.DeleteFile(_workSpace, _fileName, ".tif", ".tfw", ".tif.aux");  
             IRasterWorkspace2 rasterWs = OpenRasterWorkspace();
             if (rasterWs==null)
             {
                 throw new NullReferenceException("栅格文件打开失败");
             }
-            IRasterDataset rasterDataset = rasterWs.CreateRasterDataset(_fileName,
-            format, RasterInfo.Origin, RasterInfo.Width, RasterInfo.Height, 
-                RasterInfo.CellSize.X, RasterInfo.CellSize.Y, RasterInfo.BandCount, rstPixelType.PT_FLOAT,
+            IRasterDataset rasterDataset = rasterWs.CreateRasterDataset(_fileName+".tif",
+            format, RasterInfo.OriginPoint, RasterInfo.Width, RasterInfo.Height, 
+                RasterInfo.XCellSize, RasterInfo.YCellSize, 1, rstPixelType.PT_FLOAT,
             RasterInfo.SpatialReference, true);
             IRasterBandCollection rasterBands = (IRasterBandCollection)rasterDataset;
             var rasterBand = rasterBands.Item(0);

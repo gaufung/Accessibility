@@ -7,6 +7,9 @@ namespace SpatialAccess.Models
      
         public float RasterValue { get; set; }
 
+        public Boolean Visited { get; set; }
+
+        public Boolean HasValue { get; set; }
 
         public int CompareTo(RasterPositionValue other)
         {

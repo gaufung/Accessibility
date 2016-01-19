@@ -1,43 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ESRI.ArcGIS.Geodatabase;
-using SpatialAccess.Models;
-using Wintellect.PowerCollections;
+﻿using System.Windows.Forms;
+using ESRI.ArcGIS.Controls;
+using GalaSoft.MvvmLight.Messaging;
+using SpatialAccess.ViewModels;
 
 namespace SpatialAccess
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    internal partial class MainWindow
     {
+        private AxMapControl _mainMapControl;   
         public MainWindow()
         {
             InitializeComponent();
-            TestOrderedBag();
+            //TestOrderedBag();
+            CreateEngineControls();
+            var mainVm = new MainWindowViewModel(_mainMapControl);
+            DataContext = mainVm;
+            RegisterMessage();
         }
 
-        private void TestOrderedBag()
+        private void RegisterMessage()
         {
-            OrderedBag<RasterPositionValue> bag=new OrderedBag<RasterPositionValue>();
-            bag.Add(new RasterPositionValue(){XIndex = 1,YIndex = 2,RasterValue = 0});
-            bag.Add(new RasterPositionValue() { XIndex = 3, YIndex = 2, RasterValue = 1 });
-            bag.Add(new RasterPositionValue() { XIndex = 4, YIndex = 2, RasterValue = -3 });
-            bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = 3 });
-            var first = bag.RemoveFirst();
-            bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = -4 });
-            first = bag.RemoveFirst();
+            Messenger.Default.Register<GenericMessage<string>>(this, "Exception", msg =>
+            {
+                MessageBox.Show("出现异常:" + msg.Content);
+            });
+            Messenger.Default.Register<GenericMessage<string>>(this, "ArgumentError", msg =>
+            {
+                MessageBox.Show("无效:" + msg.Content);
+            });
+            Messenger.Default.Register<GenericMessage<string>>(this, "Message", msg =>
+            {
+                MessageBox.Show("提示:" + msg.Content);
+            });
         }
+        private void CreateEngineControls()
+        {
+            _mainMapControl = new AxMapControl
+            {
+                Dock = DockStyle.None,
+                BackColor = System.Drawing.Color.AliceBlue
+            };
+            MainFormsHost.Child = _mainMapControl;
+        }   
+
+        //private void TestOrderedBag()
+        //{
+        //    OrderedBag<RasterPositionValue> bag=new OrderedBag<RasterPositionValue>();
+        //    bag.Add(new RasterPositionValue(){XIndex = 1,YIndex = 2,RasterValue = 0});
+        //    bag.Add(new RasterPositionValue() { XIndex = 3, YIndex = 2, RasterValue = 1 });
+        //    bag.Add(new RasterPositionValue() { XIndex = 4, YIndex = 2, RasterValue = -3 });
+        //    bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = 3 });
+        //    var first = bag.RemoveFirst();
+        //    bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = -4 });
+        //    first = bag.RemoveFirst();
+        //}
     }
 }

@@ -21,16 +21,17 @@ namespace SpatialAccess.Models
         /// <summary>
         /// 距离，单位为米
         /// </summary>
-        public Double Distance { get; set; }
+        public float Distance { get; set; }
         /// <summary>
         /// 速度，单位为km/h
         /// </summary>
-        public Double Speed { get; set; }
+        public float Speed { get; set; }
 
         /// <summary>
         /// 时间成本,默认使用mi/1k/(km/h)*60=>时间
         /// </summary>
-        public  Double TimeCost {
+        public float TimeCost
+        {
             get
             {
                 if (Calcu == null)
@@ -44,7 +45,7 @@ namespace SpatialAccess.Models
         /// <summary>
         /// 计算时间公式
         /// </summary>
-        public Func<double, double, double> Calcu{ get; set; } 
+        public Func<float, float, float> Calcu { get; set; } 
 
         /// <summary>
         /// 构造函数
@@ -54,7 +55,7 @@ namespace SpatialAccess.Models
         /// <param name="distance">距离</param>
         /// <param name="speed">速度</param>
         /// <param name="func">时间消耗计算函数</param>
-        public HighTrainPath(string startCity,string stopCity,double distance,double speed,Func<double, double, double> func=null)
+        public HighTrainPath(string startCity, string stopCity, float distance, float speed, Func<float, float, float> func = null)
         {
             StartCity = startCity;
             StopCity = stopCity;

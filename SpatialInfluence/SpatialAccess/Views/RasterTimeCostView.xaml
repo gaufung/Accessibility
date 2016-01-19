@@ -1,0 +1,40 @@
+﻿<Window x:Class="SpatialAccess.Views.RasterTimeCostView"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         Title="栅格时间成本" Height="200" Width="300" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="栅格时间成本转换" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   FontSize="20" FontFamily="微软雅黑"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Text="土地利用图层：" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="100" 
+                     Text="{Binding LandUse}"/>
+            <Button Width="75" Height="20" Margin="10,0,0,0" Content="计算时间成本" Cursor="Hand" 
+                    Command="{Binding LandTimeCostCommand}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Text="交通网格图层：" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="100" Text="{Binding TrafficRoad}"/>
+            <Button Width="75" Height="20" Margin="10,0,0,0" Content="计算时间成本" 
+                    Cursor="Hand" Command="{Binding RoadTimeCostCommand}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <TextBlock Text="网格大小(米):" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox VerticalAlignment="Center" Width="100" Margin="8,0,0,0" Text="{Binding CellSize}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <TextBlock Text="名称:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox VerticalAlignment="Center" Margin="20,0,0,0" Width="100" Text="{Binding TimeCostName}"/>
+            <Button  Width="75" Height="20" Margin="48,0,0,0" Content="确定" Cursor="Hand" Command="{Binding ConfirmCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>
