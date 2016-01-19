@@ -1,7 +1,8 @@
 ﻿using System;
-using System.IO;
+using System.Collections;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
@@ -12,6 +13,7 @@ using HighTrainSpatialInfluence.Services.Common;
 using HighTrainSpatialInfluence.Services.Config;
 using HighTrainSpatialInfluence.Services.Raster;
 using HighTrainSpatialInfluence.Services.ShapeFile;
+using HighTrainSpatialInfluence.Views;
 using log4net;
 using Path = System.IO.Path;
 
@@ -104,6 +106,8 @@ namespace HighTrainSpatialInfluence.ViewModels
             _shapeOp = new ShapeOp();
             FillShapeName();
             ConfirmCommand = new RelayCommand(Confirm);
+            LandTimeCostCommand = new RelayCommand(LandTimeCost);
+            RoadTimeCostCommand = new RelayCommand(RoadTimeCost);
         }
 
         private void FillShapeName()
@@ -141,25 +145,18 @@ namespace HighTrainSpatialInfluence.ViewModels
             {
                 MessageBox.Show("文件缺少字段,请检查");
                 return;
-            }
-            AddFields(_landUseFilePath, "TimeCost", esriFieldType.esriFieldTypeDouble);
-            AddFields(_trafficRoadFilePath, "TimeCost", esriFieldType.esriFieldTypeDouble);
-            SetTimeCost(_landUseFilePath, "LandType", "TimeCost");
-            SetTimeCost(_trafficRoadFilePath, "Grade", "TimeCost");
+            }         
             DialogHelper dialogHelper = new DialogHelper();
             var folderPath = dialogHelper.OpenFolderDialog(true);
             if (!string.IsNullOrEmpty(folderPath))
             {
-                if (!Convert2Raster(folderPath))
+                if (!WriteRaster(folderPath))
                 {
                     MessageBox.Show("时间成本栅格失败");
+                    return;
                 }
-                if (!WriteTimeCostRaster(folderPath))
-                {
-                    MessageBox.Show("栅格叠加失败");
-                }
-                MessageBox.Show("栅格叠加成功");
-                GC.Collect();
+                MessageBox.Show("时间成本栅格成功");
+                GC.Collect();           
             }
         }
 
@@ -173,6 +170,31 @@ namespace HighTrainSpatialInfluence.ViewModels
                    && CellSize > 0;
         }
 
+        public RelayCommand LandTimeCostCommand { get; set; }
+
+        private void LandTimeCost()
+        {
+            if (!PreCheck())
+            {
+                MessageBox.Show("参数设置错误，请检查！");
+                return;
+            }
+            AddFields(_landUseFilePath, "TimeCost", esriFieldType.esriFieldTypeDouble);
+            SetTimeCost(_landUseFilePath, "LandType", "TimeCost");
+        }
+
+        public RelayCommand RoadTimeCostCommand { get; set; }
+
+        private void RoadTimeCost()
+        {
+            if (!PreCheck())
+            {
+                MessageBox.Show("参数设置错误，请检查！");
+                return;
+            }
+            AddFields(_trafficRoadFilePath, "TimeCost", esriFieldType.esriFieldTypeDouble);
+            SetTimeCost(_trafficRoadFilePath, "Grade", "TimeCost");            
+        }
         /// <summary>
         /// 采用hard code
         /// </summary>
@@ -196,6 +218,26 @@ namespace HighTrainSpatialInfluence.ViewModels
 
         private void SetTimeCost(string shapeFilePath, string typeField, string targetField)
         {
+            Wait wait=new Wait("设置时间成本");
+            Hashtable para=new Hashtable()
+            {
+                {"shapeFilePath",shapeFilePath},{"typeField",typeField},{"targetField",targetField}
+                ,{"wait",wait}
+            };
+            Thread t=new Thread(new ParameterizedThreadStart(TimeCostRun));
+            t.Start(para);
+            wait.ShowDialog();
+            t.Abort();
+
+        }
+
+        private void TimeCostRun(object p)
+        {
+            Hashtable para=p as Hashtable;
+            string shapeFilePath = para["shapeFilePath"].ToString();
+            string typeField = para["typeField"].ToString();
+            string targetField = para["targetField"].ToString();
+            Wait wait = para["wait"] as Wait;
             _shapeOp.FilePath = shapeFilePath;
             IFeatureClass pFeatureClass = _shapeOp.OpenFeatureClass();
             IDataset pDataset = pFeatureClass as IDataset;
@@ -204,20 +246,74 @@ namespace HighTrainSpatialInfluence.ViewModels
             pWorkspaceEdit.StartEditing(true);
             pWorkspaceEdit.StartEditOperation();
             IFeature pFeature;
-            while ((pFeature = pFeatureCursor.NextFeature()) != null)
+            int count = 0;
+            int totalCount =pFeatureClass.FeatureCount(null);
+            while (count!=totalCount&&(pFeature = pFeatureCursor.NextFeature()) != null)
             {
+                count++;
+                wait.SetProgress((double)count/ totalCount);
                 string landType = pFeature.Value[pFeature.Fields.FindField(typeField)].ToString();
-                pFeature.Value[pFeature.Fields.FindField(targetField)] = ((CellSize)/1000)/_speed[landType]*60;
+                pFeature.Value[pFeature.Fields.FindField(targetField)] = ((CellSize) / 1000) / _speed[landType] * 60;
                 pFeature.Store();
             }
-            Marshal.ReleaseComObject(pFeatureCursor);
+            wait.SetWaitCaption("正在存储数据");
             pWorkspaceEdit.StopEditOperation();
             pWorkspaceEdit.StopEditing(true);
+            Marshal.ReleaseComObject(pFeatureCursor);
+            wait.CloseWait();
         }
-
         #endregion
 
-        private bool Convert2Raster(string folderPath)
+        private bool WriteRaster(string folderPath)
+        {
+            Wait wait=new Wait("生成时间成本栅格");
+            Hashtable para = new Hashtable()
+            {
+                {"folderPath", folderPath},
+                {"wait", wait},
+                {"ret", false}
+            };
+            Thread t = new Thread(new ParameterizedThreadStart(RasterRun));
+            t.Start(para);
+            wait.ShowDialog();
+            t.Abort();
+            return (bool) para["ret"];
+        }
+        private void RasterRun(object p)
+        {
+            Hashtable para=p as Hashtable;
+            string folderPath = para["folderPath"].ToString();
+            Wait wait = para["wait"] as Wait;
+            wait.SetProgress(0);
+            bool result = true;
+            result&=TimeCost2Raster(folderPath);
+            wait.SetProgress(0.5);
+            GC.Collect();
+            result &= WriteTimeCostRaster(folderPath);
+            wait.SetProgress(1);
+            para["ret"] = result;
+            wait.CloseWait();
+            //try
+            //{
+            //    _shapeOp.FilePath = _landUseFilePath;
+            //    IFeatureClass pLandFeatureClass = _shapeOp.OpenFeatureClass();
+            //    _shapeOp.FilePath = _trafficRoadFilePath;
+            //    IFeatureClass pTrafficFeatureClass = _shapeOp.OpenFeatureClass();
+            //    IEnvelope pEnvelope = ((IGeoDataset) pLandFeatureClass).Extent;
+            //    var raster = new Raster(CellSize, pEnvelope, "TIFF");
+            //    raster.Convert(pLandFeatureClass, "TimeCost", folderPath, LandUse);
+            //    raster.Convert(pTrafficFeatureClass, "TimeCost", folderPath, TrafficRoad);
+            //    return true;
+            //}
+            //catch (Exception e)
+            //{
+
+            //    _log.Error(e.ToString());
+            //}
+            //return false;
+        }
+
+        private bool TimeCost2Raster(string folderPath)
         {
             try
             {
@@ -225,7 +321,7 @@ namespace HighTrainSpatialInfluence.ViewModels
                 IFeatureClass pLandFeatureClass = _shapeOp.OpenFeatureClass();
                 _shapeOp.FilePath = _trafficRoadFilePath;
                 IFeatureClass pTrafficFeatureClass = _shapeOp.OpenFeatureClass();
-                IEnvelope pEnvelope = ((IGeoDataset) pLandFeatureClass).Extent;
+                IEnvelope pEnvelope = ((IGeoDataset)pLandFeatureClass).Extent;
                 var raster = new Raster(CellSize, pEnvelope, "TIFF");
                 raster.Convert(pLandFeatureClass, "TimeCost", folderPath, LandUse);
                 raster.Convert(pTrafficFeatureClass, "TimeCost", folderPath, TrafficRoad);
@@ -233,20 +329,17 @@ namespace HighTrainSpatialInfluence.ViewModels
             }
             catch (Exception e)
             {
-
                 _log.Error(e.ToString());
             }
-            return false;
-
+            return false; 
         }
-
         private bool WriteTimeCostRaster(string folderPath)
         {
             try
             {
                 //读取两个文件
-                var landReader = new RasterReader(folderPath, LandUse + ".tif");
-                var roadReader = new RasterReader(folderPath, TrafficRoad + ".tif");
+                var landReader = new RasterReader(folderPath, LandUse+".tif");
+                var roadReader = new RasterReader(folderPath, TrafficRoad+".tif");
                 var landRaster = landReader.Convert2Matrix();
                 var roadRaster = roadReader.Convert2Matrix();
                // Print(landRaster, "ditu");
@@ -272,6 +365,23 @@ namespace HighTrainSpatialInfluence.ViewModels
             return false;
         }
 
-        
+        //private bool DeleteRasterFile(string folderPath,string )
+        //{
+        //    int dotIndex = rasterName.IndexOf(".");
+        //    if (dotIndex != -1) rasterName = rasterName.Substring(0, dotIndex + 1);
+        //    try
+        //    {
+        //        DirectoryInfo info = new DirectoryInfo(rasterWorkSpace);
+        //        foreach (var fileInfo in info.GetFiles(rasterName))
+        //        {
+        //            fileInfo.Delete();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }   
+        //}
     }
 }

@@ -16,11 +16,13 @@
                    FontSize="20" FontFamily="微软雅黑"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Text="土地利用图层：" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="150" Text="{Binding LandUse}"/>
+            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="100" Text="{Binding LandUse}"/>
+            <Button Width="60" Height="20" Margin="5,0,0,0" Content="时间成本" Cursor="Hand" Command="{Binding LandTimeCostCommand}"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <TextBlock Text="交通网格图层：" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="150" Text="{Binding TrafficRoad}"/>
+            <TextBox IsReadOnly="True" VerticalAlignment="Center" Width="100" Text="{Binding TrafficRoad}"/>
+            <Button Width="60" Height="20" Margin="5,0,0,0" Content="时间成本" Cursor="Hand" Command="{Binding RoadTimeCostCommand}"/>
         </StackPanel>
         <StackPanel Grid.Row="3" Orientation="Horizontal">
             <TextBlock Text="网格大小(米):" VerticalAlignment="Center" Margin="10,0,0,0"/>

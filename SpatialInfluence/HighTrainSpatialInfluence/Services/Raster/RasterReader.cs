@@ -164,19 +164,20 @@ namespace HighTrainSpatialInfluence.Services.Raster
         /// <returns></returns>
         public float?[,] Convert2Matrix()
         {
+            var pixelBlock = GetAllPixelBlock();
             float?[,] raster = new float?[Width, Height];
             for (int i = 0; i < Width; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    object res = Read(i, j);
+                    object res = pixelBlock.GetVal(0, i, j);
                     if (res == null)
                     {
-                        raster[i,j] = null;
+                        raster[i, j] = null;
                     }
                     else
                     {
-                       // raster[i, j] = System.Convert.ToSingle(res) < 0 ? null : System.Convert.ToSingle(res);
+                        // raster[i, j] = System.Convert.ToSingle(res) < 0 ? null : System.Convert.ToSingle(res);
                         Single value = System.Convert.ToSingle(res);
                         if (value < 0)
                         {
@@ -190,6 +191,18 @@ namespace HighTrainSpatialInfluence.Services.Raster
                 }
             }
             return raster;
+        }
+
+        private IPixelBlock GetAllPixelBlock()
+        {
+            IRaster pRaster = GetRaster();
+            IPnt pnt = new PntClass();
+            pnt.SetCoords(0, 0);
+            IPnt pntSize = new PntClass();
+            pntSize.SetCoords(Width, Height);
+            IPixelBlock pixelBlock = pRaster.CreatePixelBlock(pntSize);
+            pRaster.Read(pnt, pixelBlock);
+            return pixelBlock;
         }
 
 

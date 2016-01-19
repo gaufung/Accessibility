@@ -80,6 +80,9 @@ namespace HighTrainSpatialInfluence.ViewModels
             HighTrainNoCommand = new RelayCommand(HighTrainNo);
             HighTrainYesCommand = new RelayCommand(HighTrainYes);
             LocationAccessiblityCommand = new RelayCommand(LocationAccessiblity);
+            NetworkEfficiencyCommand=new RelayCommand(NetworkEfficiency);
+            EconomicalPotentialCommand = new RelayCommand(EconomicalPotential);
+            ChanceAccessiblityCommand = new RelayCommand(ChanceAccessiblity);
         }
 
         public RelayCommand OpenLandUseCommand { get; set; }
@@ -178,6 +181,39 @@ namespace HighTrainSpatialInfluence.ViewModels
                 view.ShowDialog();
             }
           
+        }
+
+        public RelayCommand NetworkEfficiencyCommand { get; set; }
+
+        private void NetworkEfficiency()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new NetworkEfficiency(new NetworkEfficiencyViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand EconomicalPotentialCommand { get; set; }
+
+        private void EconomicalPotential()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new EconomicalPotentialView(new EconomicalPotentialViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand ChanceAccessiblityCommand { get; set; }
+
+        private void ChanceAccessiblity()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new ChanceAccessiblityView(new ChanceAccessiblityViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
         }
         #endregion
 
