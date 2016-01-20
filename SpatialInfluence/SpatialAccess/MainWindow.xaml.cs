@@ -44,18 +44,6 @@ namespace SpatialAccess
                 BackColor = System.Drawing.Color.AliceBlue
             };
             MainFormsHost.Child = _mainMapControl;
-        }   
-
-        //private void TestOrderedBag()
-        //{
-        //    OrderedBag<RasterPositionValue> bag=new OrderedBag<RasterPositionValue>();
-        //    bag.Add(new RasterPositionValue(){XIndex = 1,YIndex = 2,RasterValue = 0});
-        //    bag.Add(new RasterPositionValue() { XIndex = 3, YIndex = 2, RasterValue = 1 });
-        //    bag.Add(new RasterPositionValue() { XIndex = 4, YIndex = 2, RasterValue = -3 });
-        //    bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = 3 });
-        //    var first = bag.RemoveFirst();
-        //    bag.Add(new RasterPositionValue() { XIndex = 1, YIndex = 4, RasterValue = -4 });
-        //    first = bag.RemoveFirst();
-        //}
+        }          
     }
 }

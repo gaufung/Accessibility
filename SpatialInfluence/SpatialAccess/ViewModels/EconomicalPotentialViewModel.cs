@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using ESRI.ArcGIS.Carto;
+using log4net;
 using SpatialAccess.Services.Raster;
 using SpatialAccess.Services.ShapeFile;
 using SpatialAccess.Views;
@@ -13,6 +15,8 @@ namespace SpatialAccess.ViewModels
 {
     class EconomicalPotentialViewModel:IndexBaseViewModel
     {
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);   
         public EconomicalPotentialViewModel(string cityFilePath) : base(cityFilePath)
         {
         }
@@ -97,8 +101,9 @@ namespace SpatialAccess.ViewModels
                 GC.Collect();
                 para["ret"] = true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _log.Error(e.GetType()+e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally

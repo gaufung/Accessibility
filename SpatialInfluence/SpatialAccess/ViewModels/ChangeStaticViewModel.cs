@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using SpatialAccess.Services.Common;
 using SpatialAccess.Services.Raster;
 using SpatialAccess.Views;
@@ -16,6 +18,9 @@ namespace SpatialAccess.ViewModels
 {
     class ChangeStaticViewModel:ViewModelBase
     {
+
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private String _rasterName;
 
         public String RasterName
@@ -119,7 +124,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo log
+                _log.Error(e.GetType()+e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally

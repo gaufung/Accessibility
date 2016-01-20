@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using SpatialAccess.Models;
 using SpatialAccess.Services.Algorithm;
 using SpatialAccess.Services.Common;
@@ -17,6 +19,10 @@ namespace SpatialAccess.ViewModels
 {
     class HighTrainNoViewModel:ViewModelBase
     {
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+
         private readonly string _cityShapeFilePath;
         private string _rasterFilePath;
 
@@ -130,7 +136,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo 写在日志文件中
+                _log.Error(e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally
@@ -176,7 +182,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo 写入log文件中
+                _log.Error(e.Message + e.StackTrace);
             }
            
         }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using ESRI.ArcGIS.Geodatabase;
@@ -9,6 +10,7 @@ using ESRI.ArcGIS.Geometry;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using SpatialAccess.Services.Algorithm;
 using SpatialAccess.Services.Common;
 using SpatialAccess.Services.Config;
@@ -21,6 +23,11 @@ namespace SpatialAccess.ViewModels
 {
     class RasterTimeCostViewModel:ViewModelBase
     {
+
+        private static log4net.ILog _log =
+            LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+       
+        
         private readonly string _landUseFilePath;
         private readonly string _trafficRoadFilePath;
 
@@ -55,7 +62,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo 写到配置日志文件中
+                _log.Error(e.Message+e.StackTrace);
             }
 
 
@@ -330,7 +337,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-               //todo 写到日志文件
+                _log.Error(e.Message + e.StackTrace);
             }
             return false;
         }
@@ -352,7 +359,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo 写到日志文件
+                _log.Error(e.Message + e.StackTrace);
             }
             return false;
         }

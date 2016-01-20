@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+using log4net;
 using SpatialAccess.Services.Raster;
 using SpatialAccess.Views;
 
@@ -9,6 +11,8 @@ namespace SpatialAccess.ViewModels
 {
     internal class LocationAccessibilityViewModel:IndexBaseViewModel
     {
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);   
         public LocationAccessibilityViewModel(string cityFilePath) : base(cityFilePath)
         {
         }
@@ -69,8 +73,9 @@ namespace SpatialAccess.ViewModels
                 GC.Collect();
                 para["ret"] = true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _log.Error(e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally

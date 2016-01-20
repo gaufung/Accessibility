@@ -38,13 +38,13 @@
                                    Command="{Binding HighTrainYesCommand}"/>
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="指标计算">
-                    <fluent:Button Text="区位可达性" LargeIcon="Resources/Archives.png"
+                    <fluent:Button Text="区位可达性" LargeIcon="Resources/graph0.png"
                                    Command="{Binding LocationAccessiblityCommand}"/>
-                    <fluent:Button Text="相对可达性" LargeIcon="Resources/Archives.png"
+                    <fluent:Button Text="相对可达性" LargeIcon="Resources/graph1.png"
                                    Command="{Binding NetworkEfficiencyCommand}"/>
-                    <fluent:Button Text="经济潜能" LargeIcon="Resources/Archives.png"
+                    <fluent:Button Text="经济潜能" LargeIcon="Resources/graph2.png"
                                    Command="{Binding EconomicalPotentialCommand}"/>
-                    <fluent:Button Text="机会可达性" LargeIcon="Resources/Archives.png"
+                    <fluent:Button Text="机会可达性" LargeIcon="Resources/graph3.png"
                                    Command="{Binding ChanceAccessiblityCommand}"/>
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="统计分析">

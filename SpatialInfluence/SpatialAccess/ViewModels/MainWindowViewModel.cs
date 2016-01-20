@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.Geometry;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using SpatialAccess.Services.Common;
 using SpatialAccess.Services.ShapeFile;
 using SpatialAccess.Views;
@@ -14,6 +16,8 @@ namespace SpatialAccess.ViewModels
 {
     internal class MainWindowViewModel:ViewModelBase
     {
+
+
         /// <summary>
         /// 地图控件
         /// </summary>

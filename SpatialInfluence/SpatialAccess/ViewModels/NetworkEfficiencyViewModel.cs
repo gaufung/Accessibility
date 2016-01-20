@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+using log4net;
 using SpatialAccess.Models;
 using SpatialAccess.Services.Raster;
 using SpatialAccess.Views;
@@ -11,6 +13,9 @@ namespace SpatialAccess.ViewModels
 {
     class NetworkEfficiencyViewModel:IndexBaseViewModel
     {
+
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private Double _speed;
 
         public Double Speed
@@ -99,8 +104,9 @@ namespace SpatialAccess.ViewModels
                 GC.Collect();
                 para["ret"] = true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _log.Error(e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally

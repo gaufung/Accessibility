@@ -274,6 +274,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\check_alt.png" />
@@ -297,6 +298,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="city.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\graph0.png" />
+    <Resource Include="Resources\graph1.png" />
+    <Resource Include="Resources\graph2.png" />
+    <Resource Include="Resources\graph3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

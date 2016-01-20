@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using ESRI.ArcGIS.Geodatabase;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using SpatialAccess.Models;
 using SpatialAccess.Services.Algorithm;
 using SpatialAccess.Services.Common;
@@ -17,6 +19,10 @@ namespace SpatialAccess.ViewModels
 {
     internal class IndexBaseViewModel:ViewModelBase
     {
+        private static log4net.ILog _log =
+           LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);   
+
+
         protected string HighTrainNoFolderPath;
         protected string HighTrainYesFolderPath;
 
@@ -93,7 +99,7 @@ namespace SpatialAccess.ViewModels
             }
             catch (Exception e)
             {
-                //todo 写入log文件中
+                _log.Error(e.Message+e.StackTrace);
             }
         }
 
@@ -154,14 +160,6 @@ namespace SpatialAccess.ViewModels
             {
                 CityValues.Add(re.Key,Convert.ToSingle(re.Value));
             }
-            //foreach (var calculatorCity in Cities)
-            //{
-            //    if (calculatorCity.IsSelected)
-            //    {
-            //        CityValues.Add(calculatorCity.Name,(float)shapeOp.FindValue(pFeatureClass,"Name",
-            //            calculatorCity.Name,SelectedIndex));
-            //    }
-            //}
         }
         private void Init()
         {

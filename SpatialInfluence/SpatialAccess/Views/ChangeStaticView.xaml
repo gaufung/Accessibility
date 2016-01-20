@@ -2,7 +2,8 @@
         x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="变化统计" Height="240" Width="300">
+        Title="变化统计" Height="240" Width="300" 
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -28,7 +29,7 @@
             <TextBlock Text="输入名称:" VerticalAlignment="Center" 
                        Margin="20,0,0,0" FontSize="15"/>
             <TextBox Text="{Binding RasterName}" Width="100" Height="30" Margin="10,0,0,0"/>
-            <Button Content="选择" Height="25" Width="80" Margin="10,0,0,0" FontSize="15" 
+            <Button Content="选择" Height="25" Width="60" Margin="10,0,0,0" FontSize="15" 
                     Command="{Binding ConfirmCommand}" Cursor="Hand"/>
         </StackPanel>
     </Grid>
