@@ -30,6 +30,13 @@ namespace SpatialAccess.Services.Raster
         public RasterOp(int width, int height)
         {
             _raster = new float?[width, height];
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    _raster = null;
+                }
+            }
         }
 
         public RasterOp(float?[,] raster)
@@ -41,7 +48,19 @@ namespace SpatialAccess.Services.Raster
         {
             if (reader == null) throw new ArgumentNullException("栅格文件读取为null");
             _raster = reader.Convert2Matrix();
-        } 
+        }
+
+        public RasterOp(RasterOp op)
+        {
+            _raster = new float?[op.Width, op.Height];
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    _raster[i, j] = op.Read(i, j);
+                }
+            }
+        }
         #endregion
 
         #region 获取数据
@@ -51,6 +70,20 @@ namespace SpatialAccess.Services.Raster
             if (!Valid(width, height)) 
                 throw new ArgumentOutOfRangeException("操作范围无效");
             return _raster[width, height];
+        }
+
+        public void Reset()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    if (_raster[i,j].HasValue)
+                    {
+                        _raster[i, j] = 0.0F;
+                    }
+                }
+            }
         }
 
         public void Write(int width, int height, float? value)
@@ -234,15 +267,15 @@ namespace SpatialAccess.Services.Raster
 
         public RasterOp Clone()
         {
-            RasterOp rasterOp=new RasterOp(Width,Height);
+            float?[,] raster=new float?[Width,Height];
             for (int i = 0; i < Width; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    rasterOp.Write(i,j,Read(i,j));
+                    raster[i, j] = Read(i, j);
                 }
             }
-            return rasterOp;
+            return new RasterOp(raster);
         }
     }
 }

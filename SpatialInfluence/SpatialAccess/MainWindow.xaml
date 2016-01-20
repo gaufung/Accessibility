@@ -47,6 +47,10 @@
                     <fluent:Button Text="机会可达性" LargeIcon="Resources/Archives.png"
                                    Command="{Binding ChanceAccessiblityCommand}"/>
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="统计分析">
+                    <fluent:Button Text="变化率" LargeIcon="Resources/import.png"
+                                   Command="{Binding ChangeStaticsCommand}"/>
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem> 
         </fluent:Ribbon>
         <Grid Grid.Row="1">

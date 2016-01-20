@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using ESRI.ArcGIS.DataSourcesRaster;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -29,7 +28,7 @@ namespace SpatialAccess.ViewModels
         /// </summary>
         private DijkstraAlgorithm _dijkstra;
 
-        private RasterReader _rasterReader;
+        private  RasterReader _rasterReader;
 
         private Dictionary<string, RasterOp> _highTrainStation; 
         #region 绑定属性
@@ -89,19 +88,6 @@ namespace SpatialAccess.ViewModels
 
         private void Confirm()
         {
-            //if (String.IsNullOrEmpty(_rasterFilePath)) return;
-            //var folderPath = DialogHelper.OpenFolderDialog(true);
-            //if (!String.IsNullOrEmpty(folderPath))
-            //{
-            //    if (WriteCityRaster(folderPath))
-            //    {
-            //        Messenger.Default.Send(new GenericMessage<string>("空间可达性计算成功"), "Message");
-            //    }
-            //    else
-            //    {
-            //        Messenger.Default.Send(new GenericMessage<string>("空间可达性计算成功"), "Message");
-            //    }
-            //}
             if (string.IsNullOrEmpty(_rasterFilePath)) return;
             string folderPath = DialogHelper.OpenFolderDialog(true);
             if (!string.IsNullOrEmpty(folderPath))
@@ -144,57 +130,47 @@ namespace SpatialAccess.ViewModels
             int count = 0;
             try
             {
-                //foreach (var calculatorCity in Cities)
-                //{
-                //    if (calculatorCity.IsSelected)
-                //    {
-                //        wait.SetProgress((double) count++/totalCount);
-                //        RasterOp res = CalculationCity(calculatorCity.Name);
-                //        RasterOp backup = res.Clone();
-                //        foreach (var highTrainCity in _dijkstra.GetCityEnumerator())
-                //        {
-                //            RasterOp op = backup.Clone();
-                //            City city = Cities.First(item => item.Name == highTrainCity);
-                //            Postion pos = _rasterReader.Coordinate(city.XCoord, city.YCoord);
-                //            var timeCost = (float) backup.Read(pos.XIndex, pos.YIndex);
-                //            RasterOp highTrainCityCost = CalutorHighTrainNetwork(highTrainCity);
-                //            highTrainCityCost.Overlay(item => item + timeCost);
-                //            op.Overlay(highTrainCityCost, Math.Min);
-                //            res.Overlay(op, Math.Min);
-                //        }
-                //        RasterWriter writer
-                //            = new RasterWriter(folderPath, calculatorCity.Name + "_高铁通车后", _rasterReader.RasterInfo);
-                //        res.WriteRaster(writer, "TIFF");
-                //    }
-                //}
                 wait.SetWaitCaption("计算高铁城市空间可达性");
                 foreach (string city in _dijkstra.GetCityEnumerator())
                 {
                     wait.SetProgress((double)count++/_dijkstra.Count);
                     _highTrainStation.Add(city, CalculationCity(city));
                 }
+                Dictionary<string,RasterOp> backup=new Dictionary<string, RasterOp>(_highTrainStation.Count);
+                //backup
+                foreach (var keyValue in _highTrainStation)
+                {
+                    backup.Add(keyValue.Key,new RasterOp(keyValue.Value));
+                }
+                //***********************************
                 wait.SetProgress(0);
                 wait.SetWaitCaption("计算高铁城市叠加效应");
                 count = 0;
                 foreach (string city in _dijkstra.GetCityEnumerator())
                 {
                     wait.SetProgress((double)count++ / _dijkstra.Count);
-                    RasterOp backup = _highTrainStation[city].Clone();
                     float[] times = _dijkstra.Dijkstra(city);
                     foreach (var otherCity in _dijkstra.GetCityEnumerator())
                     {
                         if (city!=otherCity)
                         {
-                            RasterOp op = backup.Clone();
                             int cityIndex = _dijkstra.GetCityIndex(otherCity);
-                            op.Overlay(item=>item+times[cityIndex]);
-                            op.Overlay(_highTrainStation[otherCity],Math.Min);
-                            _highTrainStation[city].Overlay(op,Math.Min);
+                            backup[otherCity].Overlay(item => item + times[cityIndex]);
+                            _highTrainStation[city].Overlay(backup[otherCity],Math.Min);
+                            backup[otherCity].Overlay(item => item - times[cityIndex]);
                         }
                     }
+                  
                 }
+                //****************************************
+                backup.Clear();
+                //foreach (var keyValue in _highTrainStation)
+                //{
+                //    backup.Add(keyValue.Key, new RasterOp(keyValue.Value));
+                //}
                 wait.SetWaitCaption("计算所有城市空间可达性");
                 wait.SetProgress(0);
+                count = 0;
                 foreach (var calculatorCity in Cities)
                 {
                     if (calculatorCity.IsSelected)
@@ -209,15 +185,17 @@ namespace SpatialAccess.ViewModels
                         {
                             res = CalculationCity(calculatorCity.Name);
                             RasterOp back = res.Clone();
+                            
                             foreach (var station in _highTrainStation)
                             {
-                                RasterOp op = back.Clone();
+
+                                //RasterOp op = back.Clone();
                                 City city = Cities.First(item => item.Name == station.Key);
                                 Postion pos = _rasterReader.Coordinate(city.XCoord, city.YCoord);
-                                float timecost =(float)op.Read(pos.XIndex, pos.YIndex);
-                                op.Overlay(item => item + timecost);
-                                op.Overlay(station.Value,Math.Min);
-                                res.Overlay(op,Math.Min);
+                                float timecost = (float)back.Read(pos.XIndex, pos.YIndex);
+                                _highTrainStation[station.Key].Overlay(item=>item+timecost);
+                                res.Overlay(_highTrainStation[station.Key],Math.Min);
+                                _highTrainStation[station.Key].Overlay(item => item - timecost);
                             }
                         }
                         RasterWriter writer
@@ -240,27 +218,7 @@ namespace SpatialAccess.ViewModels
            
         }
 
-        /// <summary>
-        /// 求解一个高铁站到达整个高铁网络中的时间成本
-        /// </summary>
-        /// <param name="cityName"></param>
-        /// <returns></returns>
-        private RasterOp CalutorHighTrainNetwork(string cityName)
-        {
-            float[] time = _dijkstra.Dijkstra(cityName);
-            var cities = _dijkstra.GetCityEnumerator();
-            RasterOp result = CalculationCity(cityName);
-            RasterOp backup = result.Clone();
-            foreach (string city in cities)
-            {
-                var operation = backup.Clone();
-                int cityIndex = _dijkstra.GetCityIndex(city);
-                operation.Overlay(item => item + time[cityIndex]);
-                operation.Overlay(CalculationCity(city),Math.Min);
-                result.Overlay(operation,Math.Min);
-            }
-            return result;
-        }
+       
 
         /// <summary>
         /// 计算一个高铁城市的在高铁未通车的时间成本

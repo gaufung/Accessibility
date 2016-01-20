@@ -60,7 +60,13 @@ namespace SpatialAccess.ViewModels
             RasterTimeCostCommand = new RelayCommand(RasterTimeCost);
             HighTrainNoCommand = new RelayCommand(HighTrainNo);
             HighTrainYesCommand = new RelayCommand(HighTrainYes);
+            LocationAccessiblityCommand = new RelayCommand(LocationAccessiblity);
+            NetworkEfficiencyCommand=new RelayCommand(NetworkEfficiency);
+            EconomicalPotentialCommand = new RelayCommand(EconomicalPotential);
+            ChanceAccessiblityCommand = new RelayCommand(ChanceAccessiblity);
+            ChangeStaticsCommand = new RelayCommand(ChangeStatics);
         }
+
         public RelayCommand OpenLandUseCommand { get; set; }
         private void OpenLandUse()
         {
@@ -149,6 +155,59 @@ namespace SpatialAccess.ViewModels
                 view.ShowDialog();
             }
         }
+
+        public RelayCommand LocationAccessiblityCommand { get; set; }
+
+        private void LocationAccessiblity()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view=new LocationAccessibility(new LocationAccessibilityViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand NetworkEfficiencyCommand { get; set; }
+
+        private void NetworkEfficiency()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new NetworkEfficiency(new NetworkEfficiencyViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand EconomicalPotentialCommand { get; set; }
+
+        private void EconomicalPotential()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new EconomicalPotential(new EconomicalPotentialViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand ChanceAccessiblityCommand { get; set; }
+
+        private void ChanceAccessiblity()
+        {
+            if (!string.IsNullOrEmpty(_citiesFilePath))
+            {
+                var view = new ChanceAccessibility(new ChanceAccessibilityViewModel(_citiesFilePath));
+                view.ShowDialog();
+            }
+        }
+
+        public RelayCommand ChangeStaticsCommand { get; set; }
+
+        private void ChangeStatics()
+        {
+            var view=new ChangeStaticView(new ChangeStaticViewModel());
+            view.ShowDialog();
+        }
+        
         #endregion
 
         private void LoadMap(string layerType, esriGeometryType targetType)
