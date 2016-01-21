@@ -39,16 +39,18 @@ namespace SpatialAccess.Services.Algorithm
         {
             _shapeOp=new ShapeOp(filePath);
             var pFeatureClass = _shapeOp.OpenFeatureClass();
-            if (!pFeatureClass.FieldExistCheck("Name"))
-                throw new ArgumentException("部分字段不存在");
+            if (!pFeatureClass.FieldExistCheck("Name")
+                ||!pFeatureClass.FieldExistCheck("是否为站点"))
+                    throw new ArgumentException("部分字段不存在");
             IFeatureCursor pFeaureCursor = pFeatureClass.Search(null, false);
             IFeature pFeature;
             int nameIndex = pFeatureClass.Fields.FindField("Name");
+            int typeIndex = pFeatureClass.Fields.FindField("是否为站点");
             while ((pFeature = pFeaureCursor.NextFeature()) != null)
             {
                 var name = Convert.ToString(pFeature.Value[nameIndex]);
                 IPoint point = pFeature.Shape as IPoint;
-                yield return new City(point.X, point.Y, name);
+                yield return new City(point.X, point.Y, name, pFeature.Value[typeIndex].ToString().Trim());
             }
             Marshal.ReleaseComObject(pFeaureCursor);
         }

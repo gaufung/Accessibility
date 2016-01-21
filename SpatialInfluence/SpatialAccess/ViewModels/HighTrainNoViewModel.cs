@@ -88,7 +88,7 @@ namespace SpatialAccess.ViewModels
                 }
                 else
                 {
-                    Messenger.Default.Send(new GenericMessage<string>("空间可达性计算成功"), "Message");                    
+                    Messenger.Default.Send(new GenericMessage<string>("空间可达性计算失败"), "Message");                    
                 }
             }
         }
@@ -173,12 +173,14 @@ namespace SpatialAccess.ViewModels
                 var cities = NetWorkUtil.ReadCities(_cityShapeFilePath);
                 foreach (var city in cities)
                 {
+                    if (city.CityType==CityType.HighStation)continue;
                     Cities.Add(new CalculatorCity(city));
                 }
             }
             catch (ArgumentException e)
             {
                 Messenger.Default.Send(new GenericMessage<string>(e.Message), "Exception");
+                _log.Error(e.Message + e.StackTrace);
             }
             catch (Exception e)
             {

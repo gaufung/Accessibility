@@ -37,6 +37,8 @@ namespace SpatialAccess.ViewModels
         {
             _landUseFilePath = landuse;
             _trafficRoadFilePath = traffice;
+            CellSize = 1000;
+            TimeCostName = "时间成本";
             _shapeOp=new ShapeOp(string.Empty);
             FillShapeName();
             InitSpeed();
@@ -149,6 +151,7 @@ namespace SpatialAccess.ViewModels
             if (pFeatureClass.Fields.FindField(fieldName) == -1)
             {
                 _shapeOp.AddField(pFeatureClass, fieldName, type);
+                GC.Collect();
             }
         }
         public RelayCommand LandTimeCostCommand { get; set; }
@@ -182,7 +185,16 @@ namespace SpatialAccess.ViewModels
                 return;
             }
             AddFields(_trafficRoadFilePath, "TimeCost", esriFieldType.esriFieldTypeDouble);
-            SetTimeCost(_trafficRoadFilePath, "Grade", "TimeCost");
+            if (SetTimeCost(_trafficRoadFilePath, "Grade", "TimeCost"))
+            {
+                Messenger.Default.Send(new GenericMessage<string>("时间成本设置成功"), "Message");
+
+            }
+            else
+            {
+                Messenger.Default.Send(new GenericMessage<string>("时间成本设置失败"), "Message");                
+            }
+            
         }
 
         private Boolean FieldsCheck(string shapeFilePath, params string[] targetField)
@@ -199,7 +211,7 @@ namespace SpatialAccess.ViewModels
                     , "ArgumentError");
                 return false;
             }
-            var wait = new ProgressWait();
+            var wait = new ProgressWait("计算时间成本");
             Hashtable para = new Hashtable()
             {
                 {"shapeFilePath",shapeFilePath},{"typeField",typeField},{"targetField",targetField}
@@ -235,7 +247,7 @@ namespace SpatialAccess.ViewModels
                 {
                     count++;
                     wait.SetProgress((double) count/totalCount);
-                    landType = pFeature.Value[pFeature.Fields.FindField(typeField)].ToString();
+                    landType = pFeature.Value[pFeature.Fields.FindField(typeField)].ToString().Trim();
                     pFeature.Value[pFeature.Fields.FindField(targetField)] = ((CellSize)/1000)/_speed[landType]*60;
                     pFeature.Store();
                 }
@@ -245,16 +257,14 @@ namespace SpatialAccess.ViewModels
                 Marshal.ReleaseComObject(pFeatureCursor);
                 para["ret"] = true;
             }
-            catch (KeyNotFoundException e)
+            catch (ArgumentException e)
             {
-                Messenger.Default.Send(new GenericMessage<string>(
-                    string.Format("{0}的速度缺失", landType)
-                    , "Exception"));
+                _log.Error(e.Message + e.StackTrace);
                 para["ret"] = false;
             }
             catch (Exception e)
             {
-                //todo 写到日志文件中
+                _log.Error(e.Message+e.StackTrace);
                 para["ret"] = false;
             }
             finally

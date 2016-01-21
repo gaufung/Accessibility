@@ -37,7 +37,9 @@ namespace SpatialAccess.ViewModels
 
         private  RasterReader _rasterReader;
 
-        private Dictionary<string, RasterOp> _highTrainStation; 
+        private Dictionary<string, RasterOp> _highTrainStation;
+
+        private IEnumerable<City> _allCities; 
         #region 绑定属性
         private string _rasterFileName;
         public string RasterFileName
@@ -107,7 +109,7 @@ namespace SpatialAccess.ViewModels
                 }
                 else
                 {
-                    Messenger.Default.Send(new GenericMessage<string>("空间可达性计算成功"), "Message");
+                    Messenger.Default.Send(new GenericMessage<string>("空间可达性计算失败"), "Message");
                 }
             }
 
@@ -197,7 +199,7 @@ namespace SpatialAccess.ViewModels
                             {
 
                                 //RasterOp op = back.Clone();
-                                City city = Cities.First(item => item.Name == station.Key);
+                                City city = _allCities.First(item => item.Name == station.Key);
                                 Postion pos = _rasterReader.Coordinate(city.XCoord, city.YCoord);
                                 float timecost = (float)back.Read(pos.XIndex, pos.YIndex);
                                 _highTrainStation[station.Key].Overlay(item=>item+timecost);
@@ -234,7 +236,7 @@ namespace SpatialAccess.ViewModels
         private RasterOp CalculationCity(string cityName)
         {
             RasterOp rasterOp=new RasterOp(_rasterReader);
-            City city = Cities.First(item => item.Name == cityName);
+            City city = _allCities.First(item => item.Name == cityName);
             Postion pos = _rasterReader.Coordinate(city.XCoord,city.YCoord);
             return rasterOp.Calculator(pos);
         }
@@ -245,9 +247,10 @@ namespace SpatialAccess.ViewModels
         {
             try
             {
-                var cities = NetWorkUtil.ReadCities(_cityFilePath);
-                foreach (var city in cities)
+                _allCities = NetWorkUtil.ReadCities(_cityFilePath);
+                foreach (var city in _allCities)
                 {
+                    if (city.CityType==CityType.HighStation) continue;
                     Cities.Add(new CalculatorCity(city));
                 }
             }
